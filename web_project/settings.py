@@ -23,9 +23,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-i@3ny3t++9avl86id4r1e(ljp(=2b5fvis692szz*tvktc1^md'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -118,7 +118,12 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 
+# The location where the collectstatic command collects static files from apps.
+# A dedicated static file server is typically used in production to serve files
+# from this location, rather than relying on the app server to serve those files
+# from various locations in the app. Doing so results in better overall performance.
+STATIC_ROOT = BASE_DIR / 'static_collected'
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
-
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
