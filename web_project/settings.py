@@ -27,7 +27,8 @@ from django.core.management.utils import get_random_secret_key
 # ==============================================================================
 # HEROKU IMPORTS
 # ==============================================================================
-import django_heroku
+import django_on_heroku
+import dj_database_url
 
 
 # ==============================================================================
@@ -41,16 +42,14 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # ==============================================================================
 # https://docs.djangoproject.com/en/4.0/howz\to/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", get_random_secret_key())
+DEVELOPMENT_MODE = os.getenv("DEVELOPMENT_MODE", "False") == "True"
+
+if DEVELOPMENT_MODE:
+    # SECURITY WARNING: keep the secret key used in production secret!
+    SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", get_random_secret_key())
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv("DEBUG", "False") == "True"
-
-ALLOWED_HOSTS = os.getenv("DJANGO_ALLOWED_HOSTS",
-                          "127.0.0.1,localhost").split(",")
-
-DEVELOPMENT_MODE = os.getenv("DEVELOPMENT_MODE", "False") == "True"
 
 
 # ==============================================================================
@@ -104,20 +103,12 @@ WSGI_APPLICATION = 'web_project.wsgi.application'
 # ==============================================================================
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
 
-if DEVELOPMENT_MODE is True:
-    DATABASES = {
-        "default": {
-            "ENGINE": "django.db.backends.sqlite3",
-            "NAME": BASE_DIR / 'db.sqlite3',
-        }
+DATABASES = {
+    "default": {
+        "ENGINE": "django.db.backends.sqlite3",
+        "NAME": BASE_DIR / "db.sqlite3",
     }
-elif len(sys.argv) > 0 and sys.argv[1] != 'collectstatic':
-    if os.getenv("DATABASE_URL", None) is None:
-        raise Exception("DATABASE_URL environment variable not defined")
-    DATABASES = {
-        "default": dj_database_url.parse(os.environ.get("DATABASE_URL")),
-    }
-
+}
 
 # ==============================================================================
 # Password validation
@@ -148,6 +139,7 @@ AUTH_PASSWORD_VALIDATORS = [
 LANGUAGE_CODE = 'en-us'
 TIME_ZONE = 'UTC'
 USE_I18N = True
+USE_L10N = True
 USE_TZ = True
 
 
@@ -161,7 +153,7 @@ STATIC_URL = '/static/'
 # A dedicated static file server is typically used in production to serve files
 # from this location, rather than relying on the app server to serve those files
 # from various locations in the app. Doing so results in better overall performance.
-STATIC_ROOT = BASE_DIR / 'static_collected'
+# STATIC_ROOT = BASE_DIR / 'static_collected'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
@@ -187,4 +179,4 @@ APPEND_SLASH = True
 # ==============================================================================
 # HEROKU SETTINGS
 # ==============================================================================
-django_heroku.settings(locals())
+django_on_heroku.settings(locals())
