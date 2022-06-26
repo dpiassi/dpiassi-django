@@ -59,3 +59,7 @@ python manage.py migrate
 [Create a project environment for the Django tutorial](https://code.visualstudio.com/docs/python/tutorial-django#_create-a-project-environment-for-the-django-tutorial)
 
 [Create a code snippet](https://code.visualstudio.com/docs/python/tutorial-django#_create-a-code-snippet)
+
+
+## 5. Hosting on Heroku
+[Great tutorial from Real Python](https://realpython.com/django-hosting-on-heroku/)
