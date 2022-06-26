@@ -30,6 +30,8 @@ class GroupSerializer(serializers.HyperlinkedModelSerializer):
 
 
 class EmployeeSerializer(serializers.HyperlinkedModelSerializer):
+    id = serializers.IntegerField(read_only=True)
+
     class Meta:
         model = Employee
         exclude = ('url',)

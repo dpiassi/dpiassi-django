@@ -30,6 +30,7 @@ class LogMessage(models.Model):
 
 
 class Employee(models.Model):
+    id = models.BigAutoField(primary_key=True)
     name = models.CharField(max_length=100)
     email = models.EmailField()
     created_at = models.DateTimeField(auto_now_add=True)

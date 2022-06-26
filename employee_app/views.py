@@ -118,7 +118,6 @@ def new_employee(request):
     if request.method == "POST":
         if form.is_valid():
             employee = form.save(commit=False)
-            employee.created_at = datetime.now()
             employee.save()
             return redirect("home")
     else:
