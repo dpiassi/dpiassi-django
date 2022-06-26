@@ -10,26 +10,46 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.0/ref/settings/
 """
 
+# ==============================================================================
+# PYTHON IMPORTS
+# ==============================================================================
+import os
+import sys
 from pathlib import Path
-from os import getenv
 
+
+# ==============================================================================
+# DJANGO IMPORTS
+# ==============================================================================
+from django.core.management.utils import get_random_secret_key
+
+
+# ==============================================================================
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
+# ==============================================================================
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
+# ==============================================================================
 # Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/4.0/howz\to/deployment/checklist/
+# ==============================================================================
+# https://docs.djangoproject.com/en/4.0/howz\to/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = getenv('SECRET_KEY')
+SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", get_random_secret_key())
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.getenv("DEBUG", "False") == "True"
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = os.getenv("DJANGO_ALLOWED_HOSTS",
+                          "127.0.0.1,localhost").split(",")
+
+DEVELOPMENT_MODE = os.getenv("DEVELOPMENT_MODE", "False") == "True"
 
 
+# ==============================================================================
 # Application definition
+# ==============================================================================
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -38,6 +58,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework',
     'employee_app',
 ]
 
@@ -72,18 +93,29 @@ TEMPLATES = [
 WSGI_APPLICATION = 'web_project.wsgi.application'
 
 
+# ==============================================================================
 # Database
+# ==============================================================================
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+if DEVELOPMENT_MODE is True:
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": BASE_DIR / 'db.sqlite3',
+        }
     }
-}
+elif len(sys.argv) > 0 and sys.argv[1] != 'collectstatic':
+    if os.getenv("DATABASE_URL", None) is None:
+        raise Exception("DATABASE_URL environment variable not defined")
+    DATABASES = {
+        "default": dj_database_url.parse(os.environ.get("DATABASE_URL")),
+    }
 
 
+# ==============================================================================
 # Password validation
+# ==============================================================================
 # https://docs.djangoproject.com/en/4.0/ref/settings/#auth-password-validators
 
 AUTH_PASSWORD_VALIDATORS = [
@@ -102,21 +134,22 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 
+# ==============================================================================
 # Internationalization
+# ==============================================================================
 # https://docs.djangoproject.com/en/4.0/topics/i18n/
 
 LANGUAGE_CODE = 'en-us'
-
 TIME_ZONE = 'UTC'
-
 USE_I18N = True
-
 USE_TZ = True
 
 
+# ==============================================================================
 # Static files (CSS, JavaScript, Images)
+# ==============================================================================
 # https://docs.djangoproject.com/en/4.0/howto/static-files/
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
 
 # The location where the collectstatic command collects static files from apps.
 # A dedicated static file server is typically used in production to serve files
@@ -127,3 +160,19 @@ STATIC_ROOT = BASE_DIR / 'static_collected'
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+# ==============================================================================
+# REST FRAMEWORK SETTINGS
+# ==============================================================================
+REST_FRAMEWORK = {
+    # Pagination allows you to control how many objects per page are returned.
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 10,
+    # Apply default permission level.
+    # TODO change to .IsAuthenticated:
+    'DEFAULT_PERMISSION_CLASSES': ('rest_framework.permissions.AllowAny',)
+}
+
+# This should be consistent with routers.DefaultRouter(trailing_slash=True).
+APPEND_SLASH = True

@@ -1,0 +1,14 @@
+{% extends "employee_app/layout.html" %}
+{% block title %}
+Add a new employee
+{% endblock %}
+{% block content %}
+<form method="POST" class="new_employee-form">
+  <!-- 
+    Django's {% csrf_token %} tag provides protection from cross-site request forgeries.
+    DOCS: https://docs.djangoproject.com/en/3.1/ref/csrf/
+    -->
+  {% csrf_token %} {{ form.as_p }}
+  <button type="submit" class="save btn btn-default">Save</button>
+</form>
+{% endblock %}
