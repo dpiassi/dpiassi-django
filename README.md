@@ -1,6 +1,6 @@
-# My first django project
+# Django Employee App
 
-I spent some time this weekend learning a new framework from the scratch: Django. It's possible to test the results by either downloading and running this repository locally or by acessing: [web app hosted on heroku](https://dpiassi-django.herokuapp.com/)
+I spent some time this weekend implementing a basic Django app from the scratch. It's possible to test the results by either downloading and running this repository locally or by acessing: [web app hosted on heroku](https://dpiassi-django.herokuapp.com/)
 
 ## Deliverables
 
