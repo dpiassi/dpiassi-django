@@ -84,6 +84,7 @@ class EmployeeViewSet(GenericViewSet,  # generic view functionality
     queryset = Employee.objects.all().order_by("-updated_at")
     serializer_class = EmployeeSerializer
     permission_classes = [permissions.AllowAny]
+    pagination_class=None
 
 
 # ==============================================================================
